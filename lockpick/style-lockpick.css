@@ -15,6 +15,22 @@ body {
   overflow: hidden;
 }
 
+.lockpicks {
+  width: 120px;
+  background: rgba(255, 255, 255, 0.8); 
+  text-align:center;
+  padding: 13px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  height: 85px;
+  margin-right: 10px;
+}
+
+.lockpicks-counter {
+  margin-top: 20px;
+  width: 60px;
+}
+
 .rolls {
   display: flex;
   justify-content: center;

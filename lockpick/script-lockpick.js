@@ -22,6 +22,8 @@ var minRot = -90,
  var d20 = 0;
  var complexity = 10;
  // compleixty: 10 - 50 mapping: novice, aprentice, master, expert
+ const LOCKIPICKS_KEY = "availableLockpicks";
+ const SH_MODIFIER = "sleightOfHandsModifier";
 
 
 $(function(){
@@ -30,9 +32,27 @@ $(function(){
   pin = $('#pin');
   cyl = $('#cylinder');
   driver = $('#driver');
+
+  var lockpicks = localStorage.getItem(LOCKIPICKS_KEY);
+  console.log(lockpicks);
+  if (lockpicks != null) {
+    $('.lockpicks-counter').val(lockpicks > 0 ? lockpicks : 0);
+  }
+  modifierFromStorage = localStorage.getItem(SH_MODIFIER);
+  if (modifierFromStorage != null) {
+    modifier = modifierFromStorage;
+    $('.dice').val(modifierFromStorage);
+  }
+
   
+    $('.lockpicks-counter').on('change keyup', function(e) {
+        var value = $(this).val();
+        localStorage.setItem(LOCKIPICKS_KEY, value);
+    })
+
   $('.dice').on('change keyup', function(e) {
     localD20 = (Number) ($('.d20 input.dice').val());
+    localStorage.setItem(SH_MODIFIER, localD20);
     modifier = localD20;
     console.log(modifier);
   });
@@ -40,11 +60,11 @@ $(function(){
   $('.complexity').change(function() {
     var selectedValue = $(this).val();
     switch (selectedValue) {
-      case 'Новичок': complexity = 10; break;
-      case 'Ученик': complexity = 12; break;
-      case 'Адепт': complexity = 14; break;
-      case 'Мастер': complexity = 15; break;
-      case 'Эксперт': complexity = 18; break;
+      case 'Novice': complexity = 10; break;
+      case 'Apprentice': complexity = 12; break;
+      case 'Adept': complexity = 14; break;
+      case 'Master': complexity = 15; break;
+      case 'Expert': complexity = 18; break;
       default: complexity = 10;
     }
     console.log(complexity);
@@ -54,7 +74,7 @@ $(function(){
     e.preventDefault();
     $('.roll20').stop().fadeOut(function() {
       d20 = Math.floor(Math.random() * 20) + 1;
-      var rollcalculated = d20 + modifier;
+      var rollcalculated = d20 + parseInt(modifier);
       var rollValue = rollcalculated + "(" + d20 + (modifier >= 0? " + ":" - ") + Math.abs(modifier) + ")";
       $('.roll-result').text(rollValue);
       $('.roll20').stop().fadeIn();
@@ -109,7 +129,7 @@ function pushCyl() {
       //SO...to calculate max rotation, we need to create a linear scale from solveDeg+padding to maxDistFromSolve - if the user is more than X degrees away from solve zone, they are maximally distant and the cylinder cannot travel at all. Let's start with 45deg. So...we need to create a scale and do a linear conversion. If user is at or beyond max, return 0. If user is within padding zone, return 100. Cyl may travel that percentage of maxRot before hitting the damage zone.
       
       // use d20 value to calculate the complexity of the lock. Also, get the input of complexity (should be a dropdown)
-      if (d20 + modifier < complexity) {
+      if (d20 + parseInt(modifier) < complexity) {
         damagePin();
         return;
       }
@@ -204,33 +224,42 @@ function breakPin() {
       var tl, pinTop,pinBott;
       gamePaused = true;
       clearInterval(cylRotationInterval);
-      numPins--;
-  $('span').text(numPins)
-      pinTop = pin.find('.top');
-      pinBott = pin.find('.bott');
-      tl = new TimelineLite();
-      tl.to(pinTop, 0.7, {
-              rotationZ: -400,
-              x: -200,
-              y: -100,
-              opacity: 0
-            });
-      tl.to(pinBott, 0.7, {
-        rotationZ: 400,
-        x: 200,
-        y: 100,
-        opacity: 0,
-        onComplete: function(){
-          if (numPins > 0) {
-            gamePaused = false; 
-            reset();
+      let pins = parseInt($('.lockpicks-counter').val());
+      pins--;
+      if (pins <= 0) {
+        $('.lockpicks-counter').val(0)
+        localStorage.setItem(LOCKIPICKS_KEY, 0);
+        outOfPins();
+      } else {
+        localStorage.setItem(LOCKIPICKS_KEY, pins);
+        $('.lockpicks-counter').val(pins)
+        pinTop = pin.find('.top');
+        pinBott = pin.find('.bott');
+        tl = new TimelineLite();
+        tl.to(pinTop, 0.7, {
+                rotationZ: -400,
+                x: -200,
+                y: -100,
+                opacity: 0
+              });
+        tl.to(pinBott, 0.7, {
+          rotationZ: 400,
+          x: 200,
+          y: 100,
+          opacity: 0,
+          onComplete: function(){
+            if (pins > 0) {
+              gamePaused = false; 
+              reset();
+            }
+            else {
+              outOfPins();
+            }
           }
-          else {
-            outOfPins();
-          }
-        }
-      }, 0)
-      tl.play();       
+        }, 0)
+        tl.play(); 
+      }
+            
 }
 
 function reset() {

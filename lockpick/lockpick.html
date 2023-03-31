@@ -5,24 +5,30 @@
   <title>Lockpick Simulator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel="stylesheet" href="https://eignatik.github.io/lockpick/style-lockpick.css">
+<!-- <link rel="stylesheet" href="./style-lockpick.css"> -->
+
 
 </head>
 <body>
 <!-- partial:index.partial.html -->
 <div class="rolls">
+    <div class="lockpicks">
+      Lockpicks <br/>
+      <input type="number" class="lockpicks-counter"/>
+    </div>
     <div class="d20">
       <div>
-        <h2>Параметры взлома</h2>
-        Sleight of hands: 1d20 + <input class="dice" type="number"/> <input type="button" class="roll-btn" id="roll-d20" value="Бросить"/>
+        <h2>Lockpicking parameters</h2>
+        Sleight of hands: 1d20 + <input class="dice" type="number"/> <input type="button" class="roll-btn" id="roll-d20" value="Roll"/>
       </div>
       <div>
-        Сложность замка
+        Complexity
         <select class="complexity">
-          <option>Новичок</option>
-          <option>Ученик</option>
-          <option>Адепт</option>
-          <option>Мастер</option>
-          <option>Эксперт</option>
+          <option>Novice</option>
+          <option>Apprentice</option>
+          <option>Adept</option>
+          <option>Master</option>
+          <option>Expert</option>
         </select>
       </div> 
       
@@ -46,17 +52,19 @@
 <div id="modal">
   <div id="win">
      <img src="https://github.com/eignatik/eignatik.github.io/raw/main/lockpick/img/unlock.png" alt="" />
-     <h3>Замок взломан</h3>
+     <h3>Success!</h3>
   </div>
   <div id="lose">
-    <h1>Все 100 отмычек сломаны?! </h1>
-    <h4>Тебе было не лень пробовать 100 раз, чтобы сломать все отмычки?</h4>
+    <h1>No more lockpicks...</h1>
+    <h4>Looks you have ran of the lockpicks.</h4>
     <img src="https://github.com/eignatik/eignatik.github.io/raw/main/lockpick/img/shrug.png" alt="" />
   </div>
 </div>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script><script  src="https://eignatik.github.io/lockpick/script-lockpick.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script>
+<script  src="https://eignatik.github.io/lockpick/script-lockpick.js"></script>
+<!-- <script  src="./script-lockpick.js"></script> -->
 
 </body>
 </html>
